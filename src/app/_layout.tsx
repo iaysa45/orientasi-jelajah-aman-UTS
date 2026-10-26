@@ -1,18 +1,35 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { TemaProvider, useTema } from "../../context/temaContext";
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+function NavigasiUtama() {
+  const { warna, skema } = useTema();
 
-SplashScreen.preventAutoHideAsync();
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <>
+      <StatusBar style={skema === "gelap" ? "light" : "dark"} />
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: warna.latar },
+          headerTintColor: warna.teks,
+          contentStyle: { backgroundColor: warna.latar },
+        }}
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="detail/[kota]" options={{ title: "Detail Cuaca" }} />
+        <Stack.Screen
+          name="tambah-favorit"
+          options={{ presentation: "modal", title: "Tambah Favorit" }}
+        />
+      </Stack>
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <TemaProvider>
+      <NavigasiUtama />
+    </TemaProvider>
   );
 }
